@@ -8,7 +8,7 @@ call vundle#begin()
 "call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
-Plugin 'dkprice/vim-easygrep'
+"Plugin 'dkprice/vim-easygrep'
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'fatih/vim-go'
 Plugin 'scrooloose/nerdtree'
@@ -26,7 +26,19 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'jiangmiao/auto-pairs'
+Plugin 'mxw/vim-jsx'
+Plugin 'posva/vim-vue'
+Plugin 'mattn/emmet-vim'
+Plugin 'jremmen/vim-ripgrep'
+Plugin 'mbbill/undotree'
+Plugin 'brookhong/cscope.vim'
+" RipGrep executable
+if executable('rg')
+	let g:rg_derive_root='true'
+endif
 
+" UndoTree
+:nnoremap <leader>u :UndotreeShow<CR>
 "Undo persistence
 set undodir=~/.vim/undodir
 "
@@ -41,7 +53,7 @@ syntax on
 " Enable backspace
 :set backspace=indent,eol,start
 " Share clipboard
-set clipboard^=unnamed,unnamedplus
+set clipboard=unnamed,unnamedplus
 
 " Nerdtree
 "autocmd vimenter * NERDTree
@@ -107,6 +119,7 @@ let g:go_play_open_browser = 0
 let g:go_textobj_enabled = 1
 let g:go_auto_type_info = 1
 let g:ale_open_list = 0
+let g:go_gocode_propose_source=0
 au FileType go nmap <Leader>d <Plug>(go-def)
 autocmd FileType python,go setlocal completeopt-=preview
 autocmd FileType python,go setlocal completeopt=longest,menuone
@@ -114,21 +127,24 @@ autocmd FileType python,go setlocal completeopt=longest,menuone
 " ALE Linter & Fixed settings
 let g:ale_open_list = 0
 let g:ale_linter_aliases = {'jsx': ['css', 'javascript']}
-let g:ale_linters = {'go':['gofmt', 'go build', 'go lint'], 'c':['clang'], 'java':['javac'], 'jsx': ['stylelint', 'eslint']}
+let g:ale_linters = {'go':['gofmt', 'go build', 'go lint'], 'c':['clang'], 'java':['javac'], 'jsx': ['stylelint', 'eslint'], 'rust':['rls']}
 let g:ale_fixers = {
 \    'go': ['gofmt', 'goimports'],
 \    'c': ['clang-format'],
 \    'cpp': ['clang-format'],
 \    'js': ['eslint'],
 \    'python': ['yapf'],
+\    'rust': ['rustfmt'],
 \}
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:ale_fix_on_save = 1
 let g:ale_lint_delay = 200
+let g:ale_completion_enabled = 1
 highlight clear ALEWarningSign
-
+nmap <silent> <leader>aj :ALENext<cr>
+nmap <silent> <leader>ak :ALEPrevious<cr>
 " Vim speed improvements
 set noshowmatch
 set nocursorline
@@ -139,6 +155,12 @@ set scrolljump=8
 set history=700
 let html_no_rendering=1
 
+"EMMET CONFIGURATION
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
+
+"REMOVE TRAILING CHARACTERS ON SAVE
+autocmd FileType yaml,yml,html,css,c,proto,javascript,make,python autocmd BufWritePre <buffer> %s/\s\+$//e
 "FILE TYPES
 autocmd FileType make set noexpandtab sw=8 sts=0
 autocmd FileType python set tabstop=8 expandtab shiftwidth=4 softtabstop=4
@@ -148,3 +170,24 @@ autocmd FileType cpp set sw=2 ts=2 sts=2 expandtab tabstop=2
 autocmd FileType c set sw=2 ts=2 sts=2 expandtab tabstop=2
 autocmd FileType proto set tabstop=4 noexpandtab shiftwidth=4 softtabstop=4
 autocmd FileType yaml set ts=2 sw=2 sts=2 expandtab
+set background=dark
+
+"CSCOPE
+nnoremap <leader>fa :call CscopeFindInteractive(expand('<cword>'))<CR>
+nnoremap <leader>l :call ToggleLocationList()<CR>
+" s: Find this C symbol
+nnoremap  <leader>fs :call CscopeFind('s', expand('<cword>'))<CR>
+" g: Find this definition
+nnoremap  <leader>fg :call CscopeFind('g', expand('<cword>'))<CR>
+" d: Find functions called by this function
+nnoremap  <leader>fd :call CscopeFind('d', expand('<cword>'))<CR>
+" c: Find functions calling this function
+nnoremap  <leader>fc :call CscopeFind('c', expand('<cword>'))<CR>
+" t: Find this text string
+nnoremap  <leader>ft :call CscopeFind('t', expand('<cword>'))<CR>
+" e: Find this egrep pattern
+nnoremap  <leader>fe :call CscopeFind('e', expand('<cword>'))<CR>
+" f: Find this file
+nnoremap  <leader>ff :call CscopeFind('f', expand('<cword>'))<CR>
+" i: Find files #including this file
+nnoremap  <leader>fi :call CscopeFind('i', expand('<cword>'))<CR>
