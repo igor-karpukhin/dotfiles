@@ -32,6 +32,8 @@ Plugin 'mattn/emmet-vim'
 Plugin 'jremmen/vim-ripgrep'
 Plugin 'mbbill/undotree'
 Plugin 'brookhong/cscope.vim'
+Plugin 'stephpy/vim-yaml'
+Plugin 'tpope/vim-rhubarb'
 " RipGrep executable
 if executable('rg')
 	let g:rg_derive_root='true'
@@ -41,6 +43,8 @@ endif
 :nnoremap <leader>u :UndotreeShow<CR>
 "Undo persistence
 set undodir=~/.vim/undodir
+"VIM BACKUP DIR (*.swp, *.swp)
+"set backupdir=~/.vim/swapfiles//
 "
 "Navigation between buffers
 :nnoremap <C-Down> :bprevious<CR>
@@ -141,10 +145,10 @@ let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:ale_fix_on_save = 1
 let g:ale_lint_delay = 200
-let g:ale_completion_enabled = 1
+let g:ale_completion_enabled = 0
 highlight clear ALEWarningSign
-nmap <silent> <leader>aj :ALENext<cr>
-nmap <silent> <leader>ak :ALEPrevious<cr>
+nmap <silent> <leader>an :ALENext<cr>
+nmap <silent> <leader>ap :ALEPrevious<cr>
 " Vim speed improvements
 set noshowmatch
 set nocursorline
@@ -154,6 +158,9 @@ set nolazyredraw
 set scrolljump=8
 set history=700
 let html_no_rendering=1
+
+" TOGGLE SEARCH HIGHLIGHT
+nnoremap <F3> :set hlsearch!<CR>
 
 "EMMET CONFIGURATION
 let g:user_emmet_install_global = 0
@@ -169,10 +176,11 @@ autocmd FileType typescript set tabstop=8 expandtab shiftwidth=4 softtabstop=4
 autocmd FileType cpp set sw=2 ts=2 sts=2 expandtab tabstop=2
 autocmd FileType c set sw=2 ts=2 sts=2 expandtab tabstop=2
 autocmd FileType proto set tabstop=4 noexpandtab shiftwidth=4 softtabstop=4
-autocmd FileType yaml set ts=2 sw=2 sts=2 expandtab
+autocmd FileType yaml setlocal ts=2 sw=2 sts=2 expandtab cuc
 set background=dark
 
 "CSCOPE
+let g:cscope_silent=1
 nnoremap <leader>fa :call CscopeFindInteractive(expand('<cword>'))<CR>
 nnoremap <leader>l :call ToggleLocationList()<CR>
 " s: Find this C symbol
